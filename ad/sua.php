@@ -1,16 +1,17 @@
 <?php
-function sua($tenbang, $truong_can_sua, $redirect) {
+function sua($tenbang, $truong_can_sua, $redirect, $ids)
+{
     include "../connect_DB/connect_db.php";
     $conn = connectData();
 
-    if (!isset($_GET['id'])) {
+    if (!isset($_GET['$ids'])) {
         echo "Không có ID được chọn để sửa.";
         return;
     }
 
-    $id = intval($_GET['id']);
+    $id = intval($_GET['$ids']);
 
-    $sql = "SELECT * FROM $tenbang WHERE id = $id";
+    $sql = "SELECT * FROM $tenbang WHERE $ids = $id";
     $result = $conn->query($sql);
     if (!$result || $result->num_rows == 0) {
         echo "Không tìm thấy dữ liệu để sửa.";
@@ -28,11 +29,9 @@ function sua($tenbang, $truong_can_sua, $redirect) {
                 $target_file = $target_dir . basename($_FILES['Anh']['name']);
                 move_uploaded_file($_FILES["Anh"]["tmp_name"], $target_file);
                 $data_update['Anh'] = basename($_FILES['Anh']['name']);
-            }
-            elseif (isset($_POST[$truong])) {
+            } elseif (isset($_POST[$truong])) {
                 $data_update[$truong] = $_POST[$truong];
-            }
-            else {
+            } else {
                 $data_update[$truong] = $row[$truong];
             }
         }
@@ -56,6 +55,3 @@ function sua($tenbang, $truong_can_sua, $redirect) {
 
     return $row;
 }
-
-
-?>

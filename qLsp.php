@@ -7,7 +7,7 @@ $sql = "SELECT * FROM danhmucsanpham";
 $result = $conn->query($sql);
 
 $limit = 8;
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page = isset($_GET['p']) && is_numeric($_GET['p']) && $_GET['p'] > 0 ? (int)$_GET['p'] : 1;
 $offset = ($page - 1) * $limit;
 
 $totalQuery = "SELECT COUNT(*) AS total FROM sanpham";
@@ -54,27 +54,27 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
         <h2 class="text-center mb-4">Quản lý sản phẩm</h2>
 
         <div class="row g-2 mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-3 ">
+            <div class="mb-3 ">
                 <div class="d-flex flex-wrap">
-                    <div class="col-12 col-md-6 mb-2">
+                    <!-- <div class="col-12 col-md-6 mb-2">
                         <form action="" method="GET" class="d-flex me-3" style="max-width: 400px;">
                             <input type="text" name="query" class="form-control me-2" placeholder="Tìm kiếm sản phẩm..." style="width: 250px;">
                             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
                         </form>
-                    </div>
+                    </div> -->
                     <div class="col-12 col-md-6">
-                    <form action="" method="GET" class="d-flex" style="max-width: 400px;">
-                        <input type="text" name="queryid" class="form-control me-2" placeholder="Tìm kiếm theo ID..." style="width: 150px;">
-                        <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-magnifying-glass"></i> Tìm theo ID</button>
-                    </form>
+                        <form action="" method="GET" class="d-flex" style="max-width: 400px;">
+                            <input type="text" name="queryid" class="form-control me-2" placeholder="Tìm kiếm theo ID..." style="width: 150px;">
+                            <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-magnifying-glass"></i> Tìm theo ID</button>
+                        </form>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
 
         <div class="table-responsive">
-            <table class="table table-hover border border-black align-middle text-center">
+            <table class="table table-hover border align-middle text-center">
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
@@ -121,7 +121,7 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
 
         <!-- Phân trang -->
         <?php
-            include "./assets/layout/navigation/navigation.php"
+        include "./assets/layout/navigation/navigation.php"
         ?>
     </div>
 

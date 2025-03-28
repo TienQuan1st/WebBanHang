@@ -21,7 +21,7 @@ if (!empty($_GET['queryidnd'])) {
     $queryString = '&queryid=' . urlencode($search);
 }
 
-$countSql = "SELECT COUNT(*) AS total FROM users $whereClause";
+$countSql = "SELECT COUNT(*) AS total FROM donhang $whereClause";
 $stmt = $conn->prepare($countSql);
 if (!empty($whereClause)) {
     $stmt->bind_param($types, ...$params);
@@ -29,10 +29,10 @@ if (!empty($whereClause)) {
 $stmt->execute();
 $resultCount = $stmt->get_result();
 $totalRow = $resultCount->fetch_assoc();
-$totalUsers = $totalRow['total'];
-$totalPages = ceil($totalUsers / $limit);
+$tongdonhang = $totalRow['total'];
+$totalPages = ceil($tongdonhang / $limit);
 
-$sql = "SELECT * FROM users $whereClause LIMIT $limit OFFSET $offset";
+$sql = "SELECT * FROM donhang $whereClause LIMIT $limit OFFSET $offset";
 $stmt = $conn->prepare($sql);
 if (!empty($whereClause)) {
     $stmt->bind_param($types, ...$params);
@@ -76,15 +76,15 @@ $result = $stmt->get_result();
             </div>
         </div>
 
+        <!-- User Table -->
         <div class="table-responsive">
             <table class="table table-hover border align-middle text-center">
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Tên</th>
-                        <th>Ảnh</th>
-                        <th>SĐT</th>
-                        <th>Email</th>
+                        <th>ID khach hang</th>
+                        <th>Ngay dat hang</th>
+                        <th>Trang thai</th>
                         <th>Sửa</th>
                         <th>Xóa</th>
                     </tr>
@@ -93,13 +93,12 @@ $result = $stmt->get_result();
                     <?php if ($result->num_rows > 0): ?>
                         <?php while ($row = $result->fetch_assoc()): ?>
                             <tr>
-                                <td><?= $row['iduser'] ?></td>
-                                <td><?= htmlspecialchars($row['Ten_user']) ?></td>
-                                <td><img src="./assets/img/<?= $row['Anh_user'] ?>" class="img-fluid rounded" style="max-width: 60px;"></td>
-                                <td><?= $row['sdt'] ?></td>
-                                <td><?= htmlspecialchars($row['email']) ?></td>
-                                <td><a href="./ad/suasanpham.php?id=<?= $row['iduser'] ?>" class="btn btn-warning btn-sm">Sửa</a></td>
-                                <td><a href="./ad/xoasanpham.php?id=<?= $row['iduser'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa không?');">Xóa</a></td>
+                                <td><?= $row['idDonHang'] ?></td>
+                                <td><?= $row['idKhach'] ?></td>
+                                <td><?= $row['ngaydathang'] ?></td>
+                                <td><?= $row['trangthai'] ?></td>
+                                <td><a href="./ad/suasanpham.php?id=<?= $row['idDonHang'] ?>" class="btn btn-warning btn-sm">Sửa</a></td>
+                                <td><a href="./ad/xoasanpham.php?id=<?= $row['idDonHang'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa không?');">Xóa</a></td>
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>

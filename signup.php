@@ -5,20 +5,38 @@ $conn = connectData();
 $mess = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $ten = trim($_POST['username']);
+    date_default_timezone_set("Asia/Ho_Chi_Minh");
+    $thoigiantao = date("Y-m-d H:i:s");
+    $ten = trim($_POST['Ten_user']);
     $password = $_POST['password'];
-
+    $email = $_POST['email'];
     $ten = str_replace(" ", "", $ten);
     $roleId = 2;
     $Anh = "user.jpg";
+    $trangthai = 1;
+    $anh = "user.jpg"; 
 
-    $sql = "INSERT INTO user (username, password, roleId, Anh, sdt, email) 
-            VALUES ('$ten', '$password', '$roleId', '$Anh', '$sdt', '$email')";
+    if(empty($ten) || empty($password) ){
+        $mess = "<div style='color: red; text-align: center;'>Vui lòng ko để trống thông tin!</div>";
+    }else{
 
-    if ($conn->query($sql) === TRUE) {
-        header("location: ./login.php");
-    } else {
-        echo "Lỗi: " . $conn->error;
+        $sql = "INSERT INTO taikhoan (username, password, roleId, trangthai, thoigiantao) 
+            VALUES ('$ten', '$password', '$roleId', '$trangthai', '$thoigiantao')";
+            
+        if ($conn->query($sql) === TRUE) {
+            $idtk = $conn->insert_id;
+
+            $sql_users = "INSERT INTO users (idtk, Ten_user, Anh_user, sdt, email, diachi, ngaysinh) VALUES ('$idtk', '$ten', '$anh', '', '$email', '', '') ";
+            $conn->query($sql_users);
+            echo "<script>
+                    alert('Bạn đã đăng ký thành công!');
+                    window.location.href = './login.php';
+                </script>";
+            exit();
+        }
+        else {
+            echo "Lỗi: " . $conn->error;
+        }
     }
 
     $conn->close();
@@ -112,25 +130,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h2 class="fw-bold mb-4">Đăng ký</h2>
         <form action="" method="POST">
             <div class="mb-3">
-                <input type="text" name="username" class="form-control" placeholder="Tên">
+                <input type="text" name="email" class="form-control" placeholder="Tên">
             </div>
             <div class="mb-3">
-                <input type="email" name="email" class="form-control" placeholder="Email">
+                <input type="text" name="Ten_user" class="form-control" placeholder="Tên">
             </div>
             <div class="mb-3">
-                <input type="passwonamerd" name="password" class="form-control" placeholder="Password">
+                <input type="password" name="password" class="form-control" placeholder="Password">
             </div>
-            <div class="mb-3">
-                <input type="text" name="sdt" class="form-control" placeholder="Số điện thoại">
-            </div>
+
             <button type="submit" class="btn btn-custom w-100 mt-3">Đăng ký</button>
         </form>
         <p class="mt-3">Đã có tài khoản <a href="./login.php" class="text-white fw-bold">Đăng nhập</a></p>
+        <?= $mess ?>
     </div>
 
 
     <script src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+    
+    
 </body>
 
 </html>

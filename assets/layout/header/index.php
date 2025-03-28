@@ -30,13 +30,12 @@ if (isset($_SESSION['idtk'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <link href="../../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="././bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        a {
+         html a{
             text-decoration: none;
             color: #333;
         }
-
         .nav {
             z-index: 10;
             top: 0;
@@ -121,7 +120,7 @@ if (isset($_SESSION['idtk'])) {
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link active" href="./">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="./index.php">Trang chủ</a></li>
                     <li class="nav-item"><a class="nav-link active" href="./sanpham.php">Sản phẩm</a></li>
                     <li class="nav-item"><a class="nav-link" href="./giohang.php"><i class="fa-solid fa-cart-shopping text-secondary mx-1"></i>Giỏ hàng <span class="badge bg-danger"></span></a></li>
                 </ul>

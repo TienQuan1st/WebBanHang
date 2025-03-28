@@ -82,7 +82,7 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
 
 <body>
     <div class="main">
-        <?php
+        <?php 
         include "./assets/layout/header/index.php"
         ?>
 

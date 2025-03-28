@@ -1,7 +1,11 @@
 <?php
 session_start();
 include "./connect_DB/connect_db.php";
+$messl = "";
 
+// if (!isset($_SESSION['idtk'])) {
+//     $messl = "Bạn cần đăng nhập để xem giỏ hàng.";
+// }
 if (!isset($_SESSION['idtk'])) {
     die("Bạn cần đăng nhập để xem giỏ hàng.");
 }
@@ -23,15 +27,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_qty'])) {
 
     if ($soluong > $soluong_tonkho) {
         $mes = "Số lượng vượt quá tồn kho. Chỉ còn lại {$soluong_tonkho} sản phẩm.";
-    }else {
+    } else {
         $stmt = $conn->prepare("UPDATE giohang SET soluong = ? WHERE iduser = ? AND idsanpham = ?");
         $stmt->bind_param("iii", $soluong, $iduser, $idsanpham);
         $stmt->execute();
         header("Location: giohang.php");
         exit();
     }
-
-  
 }
 
 if (isset($_GET['remove'])) {
@@ -71,7 +73,9 @@ $items = $result->fetch_all(MYSQLI_ASSOC);
     <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <style>
         @media (max-width: 576px) {
-            td, th {
+
+            td,
+            th {
                 font-size: 13px;
                 padding: 6px;
             }
@@ -99,6 +103,9 @@ $items = $result->fetch_all(MYSQLI_ASSOC);
         <?php if (!empty($mes)) : ?>
             <div class="alert alert-warning text-center"><?= htmlspecialchars($mes) ?></div>
         <?php endif; ?>
+        <!-- <?php if (!empty($messl)) : ?>
+            <div class="alert alert-warning text-center"><?= htmlspecialchars($messl) ?></div>
+        <?php endif; ?> -->
 
         <?php if (!empty($items)) : ?>
             <table class="table table-bordered text-center">
@@ -125,7 +132,7 @@ $items = $result->fetch_all(MYSQLI_ASSOC);
                             <td><?= htmlspecialchars($item['Ten']) ?></td>
                             <td><?= number_format($item['Gia'], 0, ',', '.') ?> VNĐ</td>
                             <td>
-                            <form method="POST" action="giohang.php" class="d-flex flex-nowrap justify-content-center align-items-center update-form">
+                                <form method="POST" action="giohang.php" class="d-flex flex-nowrap justify-content-center align-items-center update-form">
                                     <input type="hidden" name="product_id" value="<?= $item['idsanpham'] ?>">
                                     <button type="button" class="btn btn-outline-secondary btn-sm qty-btn" data-type="minus">-</button>
                                     <input type="number" name="soluong" value="<?= $item['soluong'] ?>" min="1" class="form-control text-center mx-1" style="width: 60px;" y>
@@ -148,13 +155,13 @@ $items = $result->fetch_all(MYSQLI_ASSOC);
                 <a href="index.php" class="btn btn-outline-primary">← Tiếp tục mua sắm</a>
                 <div>
                     <a href="giohang.php?clear=true" class="btn btn-outline-danger">Xóa giỏ hàng</a>
-                    <a href="thanhtoan.php" class="btn btn-success">Đặt hàng</a>
+                    <a href="dathang.php" class="btn btn-success">Đặt hàng</a>
                 </div>
             </div>
         <?php else : ?>
             <div class="alert alert-info text-center">Giỏ hàng trống.</div>
             <div class="text-center">
-                <a href="index.php" class="btn btn-primary">Quay lại mua sắm</a>
+                <a href="./sanpham.php" class="btn btn-primary">Quay lại mua sắm</a>
             </div>
         <?php endif; ?>
     </div>
@@ -164,14 +171,14 @@ $items = $result->fetch_all(MYSQLI_ASSOC);
     <script src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script>
         document.querySelectorAll('input[name="soluong"]').forEach(input => {
-            input.addEventListener('keypress', function (e) {
+            input.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     this.closest('form').submit();
                 }
             });
 
-            input.addEventListener('blur', function () {
+            input.addEventListener('blur', function() {
                 const form = this.closest('form');
                 if (parseInt(this.value) < 1 || isNaN(parseInt(this.value))) {
                     this.value = 1;
@@ -180,9 +187,9 @@ $items = $result->fetch_all(MYSQLI_ASSOC);
             });
         });
 
-        
+
         document.querySelectorAll('.qty-btn').forEach(button => {
-            button.addEventListener('click', function () {
+            button.addEventListener('click', function() {
                 const form = this.closest('form');
                 const input = form.querySelector('input[name="soluong"]');
                 let currentQty = parseInt(input.value);

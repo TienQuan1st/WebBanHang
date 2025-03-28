@@ -6,7 +6,6 @@ if (isset($_GET['toggle']) && isset($_GET['id'])) {
     $id = (int)$_GET['id'];
     $currentStatus = isset($_GET['currentStatus']) ? (int)$_GET['currentStatus'] : null;
 
-    // Lấy trạng thái hiện tại
     $stmt = $conn->prepare("SELECT trangthai FROM taikhoan WHERE idtk = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
@@ -32,7 +31,7 @@ if (isset($_GET['toggle']) && isset($_GET['id'])) {
 }
 
 $limit = 8;
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page = isset($_GET['p']) && is_numeric($_GET['p']) && $_GET['p'] > 0 ? (int)$_GET['p'] : 1;
 $offset = ($page - 1) * $limit;
 
 $totalQuery = "SELECT COUNT(*) AS total FROM taikhoan";
@@ -41,25 +40,10 @@ $totalRow = $totalResult->fetch_assoc();
 $totalProducts = $totalRow['total'];
 $totalPages = ceil($totalProducts / $limit);
 
-if (isset($_GET['query']) && !empty($_GET['query'])) {
-    $search = trim($_GET['query']);
-    $sql = "
-        SELECT tk.*, r.roleName 
-        FROM taikhoan tk 
-        LEFT JOIN role r ON tk.roleId = r.roleId 
-        WHERE tk.username LIKE ? 
-        LIMIT $limit OFFSET $offset
-    ";
-    $stmt = $conn->prepare($sql);
-    $search_param = "%" . $search . "%";
-    $stmt->bind_param("s", $search_param);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-} else if (isset($_GET['queryid']) && !empty($_GET['queryid'])) {
+if (isset($_GET['queryid']) && !empty($_GET['queryid'])) {
     $search = trim($_GET['queryid']);
     $sql = "
-        SELECT tk.*, r.roleName 
+        SELECT tk.*, r.Ten 
         FROM taikhoan tk 
         LEFT JOIN role r ON tk.roleId = r.roleId 
         WHERE tk.idtk LIKE ? 
@@ -70,7 +54,6 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
     $stmt->bind_param("s", $search_param);
     $stmt->execute();
     $result = $stmt->get_result();
-
 } else {
     $sql = "
         SELECT tk.*, r.Ten
@@ -86,6 +69,7 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -93,19 +77,14 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
     <link rel="stylesheet" href="./assets/fonts/css/all.min.css">
     <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container mb-5 mt-4">
         <h2 class="text-center mb-4">Quản lý tài khoản</h2>
 
         <div class="row g-2 mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="">
                 <div class="d-flex flex-wrap">
-                    <div class="col-12 col-md-6 mb-2">
-                        <form action="" method="GET" class="d-flex me-3" style="max-width: 400px;">
-                            <input type="text" name="query" class="form-control me-2" placeholder="Tìm theo tên..." style="width: 250px;">
-                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
-                        </form>
-                    </div>
                     <div class="col-12 col-md-6">
                         <form action="" method="GET" class="d-flex" style="max-width: 400px;">
                             <input type="text" name="queryid" class="form-control me-2" placeholder="Tìm theo ID..." style="width: 150px;">
@@ -117,7 +96,7 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
         </div>
 
         <div class="table-responsive">
-            <table class="table table-hover border border-black align-middle text-center">
+            <table class="table table-hover border align-middle text-center">
                 <thead class="table-dark">
                     <tr>
                         <th>ID tài khoản</th>
@@ -139,18 +118,18 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
                                 <td><?= htmlspecialchars($row['password']) ?></td>
                                 <td><?= $row['Ten'] ?? 'Không rõ' ?></td>
                                 <td>
-                                    <a href="#" 
-                                    class="btn btn-sm toggle-status <?= $row['trangthai'] == 1 ? 'btn-success' : 'btn-secondary' ?>"
-                                    data-id="<?= $row['idtk'] ?>"
-                                    data-status="<?= $row['trangthai'] ?>"
-                                    id="status-<?= $row['idtk'] ?>"
-                                    onclick="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái tài khoản này?')">
+                                    <a href="#"
+                                        class="btn btn-sm toggle-status <?= $row['trangthai'] == 1 ? 'btn-success' : 'btn-secondary' ?>"
+                                        data-id="<?= $row['idtk'] ?>"
+                                        data-status="<?= $row['trangthai'] ?>"
+                                        id="status-<?= $row['idtk'] ?>"
+                                        onclick="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái tài khoản này?')">
                                         <?= $row['trangthai'] == 1 ? 'Đang hoạt động' : 'Bị khóa' ?>
                                     </a>
                                 </td>
 
                                 <td><?= $row['thoigiantao'] ?></td>
-                                <td><a href="./ad/suasanpham.php?id=<?= $row['idtk'] ?>" class="btn btn-warning btn-sm">Sửa</a></td>
+                                <td><a href="./ad/suataikhoan.php?id=<?= $row['idtk'] ?>" class="btn btn-warning btn-sm">Sửa</a></td>
                                 <td><a href="./ad/xoasanpham.php?id=<?= $row['idtk'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa không?');">Xóa</a></td>
                             </tr>
                         <?php endwhile; ?>
@@ -187,8 +166,8 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
                     url: 'qltk.php', // Gọi lại chính trang này
                     method: 'GET',
                     data: {
-                        toggle: 1,   // Để xác định yêu cầu thay đổi trạng thái
-                        id: id,      // Gửi ID của tài khoản
+                        toggle: 1, // Để xác định yêu cầu thay đổi trạng thái
+                        id: id, // Gửi ID của tài khoản
                         currentStatus: currentStatus // Gửi trạng thái hiện tại
                     },
                     success: function(response) {
@@ -212,4 +191,5 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
 
 
 </body>
+
 </html>

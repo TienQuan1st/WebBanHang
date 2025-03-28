@@ -1,10 +1,10 @@
 <?php
 session_start();
 
+require_once "./connect_DB/connect_db.php";
 
-$conn = new mysqli("localhost", "root", "", "_qlbh_");
+$conn = connectData();
 $mess = "";
-
 
 if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($row['trangthai'] == 0) {
                 $mess = "<div style='color: red; text-align: center;'>Tài khoản của bạn đã bị khóa.</div>";
             } else {
-                $_SESSION['iduser'] = $user_id;
+                $_SESSION['iduser'] = $row['idtk'];
                 $_SESSION['idtk'] = $row['idtk'];
                 $_SESSION['username'] = $row['username'];
                 $_SESSION['Anh'] = $row['Anh'];
@@ -38,9 +38,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 if ($row['roleId'] == 1) {
                     header("Location: admin.php");
-                } else if($row['roleId'] == 2){
+                } else if ($row['roleId'] == 2) {
                     header("Location: index.php");
-                }else{
+                } else {
                     header("Location: operater.php");
                 }
                 exit();
@@ -53,15 +53,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-
 $conn->close();
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="vn">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -119,7 +115,6 @@ $conn->close();
                 padding: 20px;
                 max-width: 90%;
             }
-
         }
 
         @media (max-width: 480px) {
@@ -138,31 +133,29 @@ $conn->close();
         }
     </style>
 </head>
-
 <body>
 
-    <div class="glassmorphism">
-        <h2 class="fw-bold mb-4">Đăng nhập</h2>
+<div class="glassmorphism">
+    <h2 class="fw-bold mb-4">Đăng nhập</h2>
 
-        <form method="POST">
-            <div class="mb-3">
-                <input type="text" name="username" class="form-control" placeholder="Nhập tên" required>
-            </div>
-            <div class="mb-3">
-                <input type="password" name="password" class="form-control" placeholder="Mật khẩu" required>
-            </div>
-            <div class="d-flex justify-content-end">
-                <a href="#" class="text-white">Quên mật khẩu?</a>
-            </div>
-            <button type="submit" class="btn btn-custom w-100 mt-3">Đăng nhập</button>
-        </form>
-        <p class="mt-3">Không có tài khoản? <a href="./signup.php" class="text-white fw-bold">Đăng ký</a></p>
+    <form method="POST">
+        <div class="mb-3">
+            <input type="text" name="username" class="form-control" placeholder="Nhập tên" required>
+        </div>
+        <div class="mb-3">
+            <input type="password" name="password" class="form-control" placeholder="Mật khẩu" required>
+        </div>
+        <div class="d-flex justify-content-end">
+            <a href="#" class="text-white">Quên mật khẩu?</a>
+        </div>
+        <button type="submit" class="btn btn-custom w-100 mt-3">Đăng nhập</button>
+    </form>
+    <p class="mt-3">Không có tài khoản? <a href="./signup.php" class="text-white fw-bold">Đăng ký</a></p>
 
-        <?= $mess ?>
-    </div>
+    <?= $mess ?>
+</div>
 
-    <script src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
-
 </html>

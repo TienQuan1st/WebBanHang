@@ -1,6 +1,8 @@
 <?php
 
-$conn = new mysqli("localhost", "root", "", "_qlbh_");
+require_once "./connect_DB/connect_db.php";
+
+$conn = connectData();
 
 session_start();
 

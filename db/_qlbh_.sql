@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 18, 2025 lúc 08:48 AM
+-- Thời gian đã tạo: Th4 25, 2025 lúc 11:35 AM
 -- Phiên bản máy phục vụ: 10.4.28-MariaDB
 -- Phiên bản PHP: 8.2.4
 
@@ -24,10 +24,33 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `danhmucsanpham`
+-- Cấu trúc bảng cho bảng `chitietdonhang`
+--
+USE _qlbh_;
+
+CREATE TABLE `chitietdonhang` (
+  `idchitietdh` int(11) NOT NULL,
+  `iddonhang` int(11) NOT NULL,
+  `idsanpham` int(11) NOT NULL,
+  `soluong` int(11) NOT NULL,
+  `gia` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `chitietdonhang`
 --
 
-USE _qlbh_
+INSERT INTO `chitietdonhang` (`idchitietdh`, `iddonhang`, `idsanpham`, `soluong`, `gia`) VALUES
+(1, 3, 1, 10, 1231),
+(2, 3, 2, 3, 13),
+(3, 4, 1, 1, 1231),
+(4, 5, 1, 60, 1231);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `danhmucsanpham`
+--
 
 CREATE TABLE `danhmucsanpham` (
   `id_DanhMuc` int(10) NOT NULL,
@@ -46,6 +69,29 @@ INSERT INTO `danhmucsanpham` (`id_DanhMuc`, `Ten_DanhMuc`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `donhang`
+--
+
+CREATE TABLE `donhang` (
+  `idDonHang` int(10) NOT NULL,
+  `idKhach` int(10) NOT NULL,
+  `ngaydathang` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `trangthai` int(10) NOT NULL,
+  `tongtien` int(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `donhang`
+--
+
+INSERT INTO `donhang` (`idDonHang`, `idKhach`, `ngaydathang`, `trangthai`, `tongtien`) VALUES
+(3, 2, '2025-04-25 07:57:58', 0, 12349),
+(4, 2, '2025-04-25 08:09:38', 0, 1231),
+(5, 2, '2025-04-25 08:58:55', 0, 73860);
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `giohang`
 --
 
@@ -55,13 +101,6 @@ CREATE TABLE `giohang` (
   `idsanpham` int(10) NOT NULL,
   `soluong` int(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Đang đổ dữ liệu cho bảng `giohang`
---
-
-INSERT INTO `giohang` (`id`, `iduser`, `idsanpham`, `soluong`) VALUES
-(15, 2, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -153,18 +192,33 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`iduser`, `idtk`, `Ten_user`, `Anh_user`, `sdt`, `email`, `diachi`, `ngaysinh`) VALUES
-(1, 1, 'Nguyen Van A', 'ely.jpg', 98765432, 'admin@gmail.com', 'Hà Nội', '2015-03-03'),
-(2, 2, 'Nguyen Văn B', 'ely.jpg', 98765432, 'b@gmail.com', 'Ha Noi', '2015-03-03');
+(1, 1, 'Nguyễn Văn A', 'giay.jpg', 98765432, 'admin@gmail.com', 'Hà Nội', '2015-03-03'),
+(2, 2, 'Nguyễn Văn B', 'ely.jpg', 98765432, 'b@gmail.com', 'Ha Noi', '2015-03-03');
 
 --
 -- Chỉ mục cho các bảng đã đổ
 --
 
 --
+-- Chỉ mục cho bảng `chitietdonhang`
+--
+ALTER TABLE `chitietdonhang`
+  ADD PRIMARY KEY (`idchitietdh`),
+  ADD KEY `iddonhang` (`iddonhang`),
+  ADD KEY `idsanpham` (`idsanpham`);
+
+--
 -- Chỉ mục cho bảng `danhmucsanpham`
 --
 ALTER TABLE `danhmucsanpham`
   ADD PRIMARY KEY (`id_DanhMuc`);
+
+--
+-- Chỉ mục cho bảng `donhang`
+--
+ALTER TABLE `donhang`
+  ADD PRIMARY KEY (`idDonHang`),
+  ADD KEY `idKhach` (`idKhach`);
 
 --
 -- Chỉ mục cho bảng `giohang`
@@ -206,16 +260,28 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT cho bảng `chitietdonhang`
+--
+ALTER TABLE `chitietdonhang`
+  MODIFY `idchitietdh` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT cho bảng `danhmucsanpham`
 --
 ALTER TABLE `danhmucsanpham`
   MODIFY `id_DanhMuc` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT cho bảng `donhang`
+--
+ALTER TABLE `donhang`
+  MODIFY `idDonHang` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT cho bảng `giohang`
 --
 ALTER TABLE `giohang`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT cho bảng `role`
@@ -244,6 +310,19 @@ ALTER TABLE `users`
 --
 -- Các ràng buộc cho các bảng đã đổ
 --
+
+--
+-- Các ràng buộc cho bảng `chitietdonhang`
+--
+ALTER TABLE `chitietdonhang`
+  ADD CONSTRAINT `chitietdonhang_ibfk_1` FOREIGN KEY (`iddonhang`) REFERENCES `donhang` (`idDonHang`),
+  ADD CONSTRAINT `chitietdonhang_ibfk_2` FOREIGN KEY (`idsanpham`) REFERENCES `sanpham` (`id`);
+
+--
+-- Các ràng buộc cho bảng `donhang`
+--
+ALTER TABLE `donhang`
+  ADD CONSTRAINT `donhang_ibfk_1` FOREIGN KEY (`idKhach`) REFERENCES `users` (`iduser`);
 
 --
 -- Các ràng buộc cho bảng `giohang`
