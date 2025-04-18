@@ -122,6 +122,7 @@ if (isset($_SESSION['idtk'])) {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link active" href="./">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="./sanpham.php">Sản phẩm</a></li>
                     <li class="nav-item"><a class="nav-link" href="./giohang.php"><i class="fa-solid fa-cart-shopping text-secondary mx-1"></i>Giỏ hàng <span class="badge bg-danger"></span></a></li>
                 </ul>
 
